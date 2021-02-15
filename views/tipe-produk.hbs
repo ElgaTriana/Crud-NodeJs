@@ -1,0 +1,170 @@
+{{> headers}}
+
+<style>
+  .tabeltdcenter{
+    text-align:center;
+  }
+</style>
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header"></div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            
+            <div class="card">
+              <div class="card-header container-fluid">
+                  <div class="row">
+                      <div class="col-md-10">
+                        <h3 class="card-title">Daftar Tipe Produk</h3>
+                      </div>
+                      <div class="col-md-2">
+                        <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalAdd"><i class="fa fa-plus-square"></i> Tambah Tipe Produk</button>
+                      </div>
+                  </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="tabeltipe" class="table table-bordered table-striped">
+                  <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Tipe</th>
+                    <th>Action</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    {{#each results}}
+                        <tr>
+                            <td class="tabeltdcenter" style="width: 10%;">{{increment}}</td>
+                            <td style="width: 80%;">{{tipe}}</td>
+                            <td class="tabeltdcenter" style="width: 10%;">
+                              <a href="javascript:void(0);" class="btn btn-sm btn-info edit" data-id="{{id}}" data-tipe="{{tipe}}"><i class="fa fa-edit"></i></a>
+                              <a href="javascript:void(0);" class="btn btn-sm btn-danger delete" data-id="{{id}}"><i class="fa fa-trash"></i></a>
+                            </td>
+                        </tr>
+                    {{/each}}
+                  </tfoot>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+
+{{!-- Modal Add Tipe --}}
+  <form action="/save-tipe-produk" method="post">
+        <div class="modal fade" id="modalAdd" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+         <div class="modal-dialog" role="document">
+           <div class="modal-content">
+             <div class="modal-header">
+               <h5 class="modal-title" id="exampleModalLabel">Tambah Tipe</h5>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                 <span aria-hidden="true">&times;</span>
+               </button>
+             </div>
+             <div class="modal-body"> 
+               <div class="form-group">
+                   <input type="text" name="tipe" class="form-control" placeholder="Tipe Produk" required>
+               </div>
+             </div>
+             <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+               <button type="submit" class="btn btn-primary">Save</button>
+             </div>
+           </div>
+         </div>
+        </div>
+  </form>
+{{!-- End Modal Add Tipe --}}
+
+{{!-- Modal Update Tipe --}}
+  <form action="/update-tipe" method="post">
+    <div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Edit Tipe</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <input type="text" name="tipe" class="form-control tipe" placeholder="Tipe" required>
+        </div>
+        <div class="modal-footer justify-content-between">
+          <input type="hidden" name="id" class="tipe_id">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </form>
+{{!-- End Modal Update Tipe --}}
+
+{{!-- Modal Konfirm Delete --}}
+  <form id="add-row-form" action="/delete-tipe" method="post">
+    <div class="modal fade" id="DeleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+            
+            <div class="modal-header">
+              <h5 class="modal-title" id="myModalLabel">Delete Tipe</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+
+            <div class="modal-body">
+              <strong>Anda yakin mau menghapus data ini?</strong>
+            </div>
+
+            <div class="modal-footer">
+              <input type="text" name="tipe_id" class="form-control tipe_id2" required>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-success">Delete</button>
+            </div>
+        </div>
+      </div>
+    </div>
+  </form>
+{{!-- End Modal Konfirm Delete --}}
+
+{{> footer}}
+
+<script>
+    $(function(){
+        $("#tabeltipe").DataTable({
+            "responsive": true, 
+            "lengthChange": false, 
+            "autoWidth": false,
+            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        }).buttons().container().appendTo('#tabeltipe_wrapper .col-md-6:eq(0)');
+
+        $('.edit').on('click',function(){
+          var tipe_id = $(this).data('id');
+          var tipe = $(this).data('tipe');
+          $('#EditModal').modal('show');
+          $('.tipe').val(tipe);
+          $('.tipe_id').val(tipe_id);
+        });
+
+        $('.delete').on('click',function(){
+          var tipe_id = $(this).data('id');
+          $('#DeleteModal').modal('show');
+          $('.tipe_id2').val(tipe_id);
+        });
+    });
+</script>
